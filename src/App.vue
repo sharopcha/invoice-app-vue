@@ -1,10 +1,14 @@
 <template>
   <div>
-    <div class="app flex flex-column">
+    <div v-if="!mobile" class="app flex flex-column">
       <Navigation />
       <div class="app-content flex flex-column">
         <router-view />
       </div>
+    </div>
+    <div v-else class="mobile-message flex flex-column">
+      <h2>Sorry this app is not supported on mobile devices!</h2>
+      <p>To use this app, please use a tablet or computer</p>
     </div>
   </div>
 </template>
@@ -15,6 +19,29 @@
   export default {
     components: {
       Navigation,
+    },
+    data() {
+      return {
+        mobile: null,
+      };
+    },
+    methods: {
+      checkScreen() {
+        const windowWidth = window.innerWidth;
+        console.log(windowWidth, this.mobile);
+        if (windowWidth <= 750) {
+          this.mobile = true;
+          return;
+        }
+
+        this.mobile = false;
+      },
+    },
+
+    created() {
+      this.checkScreen();
+
+      window.addEventListener('resize', this.checkScreen);
     },
   };
 </script>
@@ -41,6 +68,20 @@
       padding: 0 20px;
       flex: 1;
       position: relative;
+    }
+  }
+
+  .mobile-message {
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #141625;
+    color: #fff;
+    padding: 16px;
+
+    p {
+      margin-top: 16px;
     }
   }
 
