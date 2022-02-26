@@ -222,6 +222,18 @@
         this.toggleInvoice();
       },
     },
+
+    watch: {
+      paymentTerms() {
+        const futureDay = new Date();
+        this.paymentDueDateUnix = futureDay.setDate(
+          futureDay.getDate() + parseInt(this.paymentTerms)
+        );
+        this.paymentDueDate = new Date(
+          this.paymentDueDateUnix
+        ).toLocaleDateString('en-us', this.dateOptions);
+      },
+    },
   };
 </script>
 
