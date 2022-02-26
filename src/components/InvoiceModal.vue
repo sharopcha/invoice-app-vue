@@ -128,17 +128,17 @@
         </div>
         <div class="work-items">
           <h3>Item List</h3>
-          <table class="item-list flex">
-            <tr class="table-heading">
+          <table class="item-list">
+            <tr class="table-heading flex">
               <th class="item-name">Item Name</th>
               <th class="qty">Qty</th>
               <th class="price">Price</th>
-              <th class="total">Total</th>
+              <th class="total">Toal</th>
             </tr>
             <tr
-              v-for="(item, i) in invoiceItemList"
               class="table-items flex"
-              :key="i"
+              v-for="(item, index) in invoiceItemList"
+              :key="index"
             >
               <td class="item-name">
                 <input type="text" v-model="item.itemName" />
@@ -149,7 +149,7 @@
                 ${{ (item.total = item.qty * item.price) }}
               </td>
               <img
-                @click="dleteInvoiceItem(item.id)"
+                @click="deleteInvoiceItem(item.id)"
                 src="@/assets/icon-delete.svg"
                 alt=""
               />
@@ -178,6 +178,7 @@
 
 <script>
   import { mapMutations } from 'vuex';
+  import { uid } from 'uid';
   export default {
     name: 'InvoiceModal',
 
@@ -220,6 +221,16 @@
 
       closeInvoice() {
         this.toggleInvoice();
+      },
+
+      addNewInvoiceItem() {
+        this.invoiceItemList.push({
+          id: uid(),
+          itemName: '',
+          qty: '',
+          price: 0,
+          total: 0,
+        });
       },
     },
 
