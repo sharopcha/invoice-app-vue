@@ -180,8 +180,19 @@
   import { mapMutations } from 'vuex';
   export default {
     name: 'InvoiceModal',
+
+    created() {
+      // get current date for invoice date field
+      this.invoiceDateUnix = Date.now();
+      this.invoiceDate = new Date(this.invoiceDateUnix).toLocaleDateString(
+        'en-us',
+        this.dateOptions
+      );
+    },
+
     data() {
       return {
+        dateOptions: { year: 'numeric', month: 'short', day: 'numeric' },
         billerStreetAddress: null,
         billerCity: null,
         billerZipCode: null,
