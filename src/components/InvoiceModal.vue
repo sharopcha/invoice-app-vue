@@ -3,7 +3,7 @@
     <form @submit.prevent="submitForm" class="invoice-content">
       <h1>New Invoice</h1>
 
-      <!-- Bill Form -->
+      <!-- Bill From -->
       <div class="bill-from flex flex-column">
         <h4>Bill From</h4>
         <div class="input flex flex-column">
@@ -177,6 +177,7 @@
 </template>
 
 <script>
+  import { mapMutations } from 'vuex';
   export default {
     name: 'InvoiceModal',
     data() {
@@ -202,6 +203,13 @@
         invoiceItemList: [],
         invoiceTotal: 0,
       };
+    },
+    methods: {
+      ...mapMutations(['toggleInvoice']),
+
+      closeInvoice() {
+        this.toggleInvoice();
+      },
     },
   };
 </script>
