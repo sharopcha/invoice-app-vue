@@ -17,25 +17,25 @@
         </div>
         <div class="location-details flex">
           <div class="input flex flex-column">
-            <label for="clientCity">City</label>
-            <input required type="text" id="clientCity" v-model="clientCity" />
+            <label for="billerCity">City</label>
+            <input required type="text" id="billerCity" v-model="billerCity" />
           </div>
           <div class="input flex flex-column">
-            <label for="clientZipCode">Zip Code</label>
+            <label for="billerZipCode">Zip Code</label>
             <input
               required
               type="text"
-              id="clientZipCode"
-              v-model="clientZipCode"
+              id="billerZipCode"
+              v-model="billerZipCode"
             />
           </div>
           <div class="input flex flex-column">
-            <label for="clientCountry">Country</label>
+            <label for="billerCountry">Country</label>
             <input
               required
               type="text"
-              id="clientCountry"
-              v-model="clientCountry"
+              id="billerCountry"
+              v-model="billerCountry"
             />
           </div>
         </div>
@@ -179,6 +179,7 @@
 <script>
   import { mapMutations } from 'vuex';
   import { uid } from 'uid';
+  import { db } from '../firebase/firebaseInit';
   export default {
     name: 'InvoiceModal',
 
@@ -237,6 +238,64 @@
         this.invoiceItemList = this.invoiceItemList.filter(
           (item) => item.id != id
         );
+      },
+
+      publishInvoice() {
+        this.invoicePending = true;
+      },
+
+      calcInvoiceTotal() {
+        this.invoiceTotal = 0;
+
+        this.invoiceTotal = this.invoiceItemList.reduce(
+          (acc, item) => (acc += item.total),
+          0
+        );
+      },
+
+      saveDraft() {
+        this.invoiceDraft = true;
+      },
+
+      async uploadInvoice() {
+        if (this.invoiceItemList.length <= 0) {
+          alert('Item list cannot be empty!');
+        }
+
+        this.calcInvoiceTotal();
+
+        const database = db.collection('invoices').doc();
+
+        await database.set({
+          invoiceId: uid(6),
+          billerStreetAddress: this.billerStreetAddress,
+          billerCity: this.billerCity,
+          billerZipCode: this.billerZipCode,
+          billerCountry: this.billerCountry,
+          clientName: this.clientName,
+          clientEmail: this.clientEmail,
+          clientStreetAddress: this.clientStreetAddress,
+          clientCity: this.clientCity,
+          clientZipCode: this.clientZipCode,
+          clientCountry: this.clientCountry,
+          invoiceDateUnix: this.invoiceDateUnix,
+          invoiceDate: this.invoiceDate,
+          paymentTerms: this.paymentTerms,
+          paymentDueDateUnix: this.paymentDueDateUnix,
+          paymentDueDate: this.paymentDueDate,
+          productDescription: this.productDescription,
+          invoicePending: this.invoicePending,
+          invoiceDraft: this.invoiceDraft,
+          invoiceItemList: this.invoiceItemList,
+          invoiceTotal: this.invoiceTotal,
+          invoicePaid: null,
+        });
+
+        this.toggleInvoice();
+      },
+
+      submitForm() {
+        this.uploadInvoice();
       },
     },
 

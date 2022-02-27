@@ -34,7 +34,6 @@
     methods: {
       checkScreen() {
         const windowWidth = window.innerWidth;
-        console.log(windowWidth, this.mobile);
         if (windowWidth <= 750) {
           this.mobile = true;
           return;
